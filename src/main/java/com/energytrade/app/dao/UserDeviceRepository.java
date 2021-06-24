@@ -35,14 +35,14 @@ public interface UserDeviceRepository extends JpaRepository<UserDevice, Long>
     @Query("update UserDevice a set a.softdeleteflag=?1  where a.allUser.userId=?2 and a.devicePl.deviceTypeId=?3")
      void deleteDevice(byte deleteFlag, int userId, int deviceId);
    
-    @Query("Select a from UserDevice a where a.allUser.userId=?1")
+    @Query("Select a from UserDevice a where a.allUser.userId=?1 and a.softdeleteflag= 0")
     List<UserDevice> getUserDeviceById(int userId);
     
     @Query("Select a from GeneralConfig a where a.name in ?1")
     ArrayList<GeneralConfig> getBlockChainConfig(ArrayList<String> listOfValues);
 
     
-    @Query("Select a.agentMeterId from AgentMeterPl a where a.agentMeterName=?1")
-    int getAgentMeterDetails(String agentMeterName);   
+    @Query("Select a from AgentMeterPl a where a.agentMeterName=?1")
+    AgentMeterPl getAgentMeterDetails(String agentMeterName);   
        
 }

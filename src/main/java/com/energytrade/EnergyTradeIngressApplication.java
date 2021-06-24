@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class EnergyTradeIngressApplication {
 
 	public static void main(String[] args) {
-		System.out.println("Starting Energy Trade Ingress Main");
+		System.out.println("Starting Energy Trade Ingress Main Again");
 		//System.setProperty("server.servlet.context-path");
 		SpringApplication.run(EnergyTradeIngressApplication.class, args);
 		//, "/inmo"

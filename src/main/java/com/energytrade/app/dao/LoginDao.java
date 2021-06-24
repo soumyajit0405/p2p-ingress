@@ -18,6 +18,7 @@ import com.energytrade.app.dto.AllUserDto;
 import com.energytrade.app.dto.StateBoardMappingDto;
 import com.energytrade.app.dto.UserRolesPlDto;
 import com.energytrade.app.dto.UserTypePlDto;
+import com.energytrade.app.model.AllBlockchainTransaction;
 import com.energytrade.app.model.AllElectricityBoard;
 import com.energytrade.app.model.AllOtp;
 import com.energytrade.app.model.AllState;
@@ -58,6 +59,13 @@ public class LoginDao extends AbstractBaseDao
 	
 	@Autowired
 	BlockchainDao bcdao;
+	
+	@Autowired
+	AllBlockchainTransactionRepository allbcrepo;
+	
+	@Autowired
+    UserBlockchainKeyRepository userbcrepo;
+	
     
     public HashMap<String,Object> loginUser(String phone,String otp) {
          
@@ -182,6 +190,24 @@ public class LoginDao extends AbstractBaseDao
 //    			   listOfAccessLevels.add(userAccessLevel);
 //    			   
     	   // response.put("accessLevel", listOfAccessLevels);
+    	   String bcStatus = AppStartupRunner.configValues.get("blockChain");
+        	if (bcStatus.equalsIgnoreCase("Y")) {
+        	UserBlockchainKey ubcKey = userbcrepo.getUserBlockChainKey(userId);
+        	if (ubcKey != null) {
+        	AllBlockchainTransaction tx = allbcrepo.getTxData(ubcKey.getUserBlockchainKeysId());
+        	
+        	if (tx!=null) {
+        	String txStatus = tx.getStatus().getBlcTxStatusName();
+        	response.put("blockChainStatus",txStatus);
+        	}
+        	}
+        	else {
+        		response.put("blockChainStatus","Successful");
+        	}
+        		
+        	} else {
+        		response.put("blockChainStatus","Successful");
+        	}
     	   response.put("message",CustomMessages.getCustomMessages("AS"));
     	   response.put("key","200");
       

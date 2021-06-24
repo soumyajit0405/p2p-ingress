@@ -58,8 +58,20 @@ public class AgentMeterPl implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="updated_ts")
 	private Date updatedTs;
+	
+	//bi-directional many-to-one association to UserDevice
+	@OneToMany(mappedBy="meterId")
+	private List<UserDevice> userDevices;
 
-	 public AgentMeterPl() {
+	 public List<UserDevice> getUserDevices() {
+		return userDevices;
+	}
+
+	public void setUserDevices(List<UserDevice> userDevices) {
+		this.userDevices = userDevices;
+	}
+
+	public AgentMeterPl() {
 		// TODO Auto-generated constructor stub
 	}
 

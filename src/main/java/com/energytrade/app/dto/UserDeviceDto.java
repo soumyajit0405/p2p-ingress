@@ -12,6 +12,56 @@ public  class UserDeviceDto {
 	
 	private int userDeviceId;
 	
+	private int meterId;
+	
+	private String deviceName;
+	
+	private String meterType;
+	
+	private String meterModelnumber;
+	
+	private String portNumber;
+	
+	public int getMeterId() {
+		return meterId;
+	}
+
+	public void setMeterId(int meterId) {
+		this.meterId = meterId;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
+	}
+
+	public String getMeterType() {
+		return meterType;
+	}
+
+	public void setMeterType(String meterType) {
+		this.meterType = meterType;
+	}
+
+	public String getMeterModelnumber() {
+		return meterModelnumber;
+	}
+
+	public void setMeterModelnumber(String meterModelnumber) {
+		this.meterModelnumber = meterModelnumber;
+	}
+
+	public String getPortNumber() {
+		return portNumber;
+	}
+
+	public void setPortNumber(String portNumber) {
+		this.portNumber = portNumber;
+	}
+
 	private BigDecimal capacity;
 
 	public BigDecimal getCapacity() {
