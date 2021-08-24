@@ -24,4 +24,7 @@ public interface UserAgentsRepository extends JpaRepository<UserAgents, Long>
     
 	@Query("Select a from UserAgents a where a.allUser.userId=?1")
     List<UserAgents> getUserAgent( int userId);
+	
+	@Query("Select a from UserAgents a where a.dwAgentId=?1")
+    List<UserAgents> getUserByAgent( int agentId);
 }

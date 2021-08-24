@@ -12,6 +12,10 @@ public class CustomMessages {
 		{
 			return "User Already Existed.";
 		}
+		else if(code.equalsIgnoreCase("UAAE"))
+		{
+			return "Agent for this user already existed.";
+		}
 		
 		else if(code.equalsIgnoreCase("UNE"))
 		{

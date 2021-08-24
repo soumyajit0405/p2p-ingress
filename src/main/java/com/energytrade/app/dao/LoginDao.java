@@ -34,10 +34,10 @@ import com.energytrade.app.util.CustomMessages;
 import com.energytrade.app.util.HttpConnectorHelper;
 
 
-
 @Transactional
 @Repository
 public class LoginDao extends AbstractBaseDao
+
 {
 	@Autowired
     AllUserRepository alluserrepo;

@@ -153,45 +153,57 @@ public class UserProfileDao extends AbstractBaseDao
     	HashMap<String,Object> inputDetails = new  HashMap<String, Object>();
     	JSONObject data = new JSONObject();
         try {
+        	List<UserAgents> userAgents = userAgentRepo.getUserByAgent((int)deviceDetails.get("agentId"));
+        	if(userAgents.size() == 0) {
+        		response.put("message","No User registered with this Agent");
+            	   response.put("key","404");
+            	   return response;
+        	}
         	Float deviceCapacity=0.0f;
         	BigDecimal bgdeviceCapacity=new BigDecimal(0);
-        	ArrayList<HashMap<String,Object>> deviceList=(ArrayList<HashMap<String,Object>>)deviceDetails.get("devices");
-        	String userId=(String)deviceDetails.get("userId");
-        	AllUser alluser=alluserrepo.getUserIdById(Integer.parseInt(userId));
+        //	ArrayList<HashMap<String,Object>> deviceList=(ArrayList<HashMap<String,Object>>)deviceDetails.get("devices");
         	
         	List<UserDevice> listOfUserDevice=new ArrayList<UserDevice>();
         	int count=userdevicerepo.getUserDeviceCount();
         	// GeneralConfig bcConfig = userdevicerepo.getBlockChainConfig("block_chain");
         	String bcStatus = AppStartupRunner.configValues.get("blockChain");
         	ArrayList<JSONObject> listofDevices = new ArrayList<JSONObject>();
-        	for(int i=0;i<deviceList.size();i++) {
+        	//for(int i=0;i<deviceList.size();i++) {
         		JSONObject device= new JSONObject();
         		count= count+1;
         		UserDevice  userdevice=new UserDevice();
         		userdevice.setUserDeviceId(count);
         		userdevice.setActiveStatus((byte)1);
-        		deviceCapacity=Float.parseFloat((String)deviceList.get(i).get("deviceCapacity"));
-        		bgdeviceCapacity=BigDecimal.valueOf(deviceCapacity);
-        		userdevice.setDeviceCapacity(bgdeviceCapacity);
-        		DevicePl devicepl=userdevicerepo.getDevice(Integer.parseInt((String)deviceList.get(i).get("deviceId")));
-        		// Code to populate block chain device list
-        		AgentMeterPl agentMeterId = userdevicerepo.getAgentMeterDetails(devicepl.getDeviceTypeName());
-        		device.put("DeviceID",devicepl.getDeviceTypeName());
-        		device.put("MeterID",Integer.toString(agentMeterId.getAgentMeterId()));
-        		userdevice.setDevicePl(devicepl);
-        		userdevice.setAllUser(alluser);
-        		userdevice.setForecastEnabled((String)deviceList.get(i).get("forecast"));
-        		userdevice.setDataAcquistionEnabled("Y");
-        		userdevice.setMeterId((int)deviceList.get(i).get("meterId"));
-        		userdevice.setDeviceName((String)deviceList.get(i).get("deviceName"));
-        		userdevice.setMeterType((String)deviceList.get(i).get("meterType"));
-        		userdevice.setMeterModelNumber((String)deviceList.get(i).get("meterModelNumber"));
-        		userdevice.setPortNumber((String)deviceList.get(i).get("portNumber"));
-        		listOfUserDevice.add(userdevice);
-        		listofDevices.add(device);
+        		try {
+        		Double capacity = (Double)deviceDetails.get("deviceCapacity");
+        		bgdeviceCapacity=BigDecimal.valueOf(capacity);
+        		} catch(ClassCastException e) {
+        			int capacity = (int)deviceDetails.get("deviceCapacity");
+        			bgdeviceCapacity=BigDecimal.valueOf(capacity);
+        		}
         		
-        	}
-        	userdevicerepo.saveAll(listOfUserDevice);
+        		userdevice.setDeviceCapacity(bgdeviceCapacity);
+        		DevicePl devicepl=userdevicerepo.getDeviceByName((String)deviceDetails.get("deviceCategory"));
+        		// Code to populate block chain device list
+        		if(devicepl == null) {
+        			devicepl=userdevicerepo.getDeviceByName("OTHERS");
+        		}
+//        		AgentMeterPl agentMeterId = userdevicerepo.getAgentMeterDetails(devicepl.getDeviceTypeName());
+//        		device.put("DeviceID",devicepl.getDeviceTypeName());
+//        		device.put("MeterID",Integer.toString(agentMeterId.getAgentMeterId()));
+        		userdevice.setDevicePl(devicepl);
+        		userdevice.setAllUser(userAgents.get(0).getAllUser());
+        		userdevice.setForecastEnabled((String)deviceDetails.get("forecastEnabledFlag"));
+        		userdevice.setDataAcquistionEnabled((String)deviceDetails.get("dataAquisitionEnabledFlag"));
+        		userdevice.setMeterId((int)deviceDetails.get("meterId"));
+        		userdevice.setDeviceName((String)deviceDetails.get("deviceName"));
+        		userdevice.setMeterType((String)deviceDetails.get("meterType"));
+        		userdevice.setMeterModelNumber((String)deviceDetails.get("meterModelNumber"));
+        	//	userdevice.setPortNumber((String)deviceDetails.get("portNumber"));
+        	
+        		
+        //	}
+        	userdevicerepo.save(userdevice);
         	
 //        	JSONObject device= new JSONObject();
 //        	device.put("DeviceID","NetMeter");
@@ -201,10 +213,10 @@ public class UserProfileDao extends AbstractBaseDao
         //	data = "{\"username\":"\""+alluser.getFullName()+"\""}";
         	if (bcStatus.equalsIgnoreCase("Y")) {
      		   String blockChainURL = AppStartupRunner.configValues.get("blockChainUATUrl");
-        		DeviceRepository dcb= alluserrepo.getDeviceRepository(alluser.getUniqueServiceNumber());
-        		UserBlockchainKey bcUser = bcdao.preCreateBlockchainKey(alluser);
+        		DeviceRepository dcb= alluserrepo.getDeviceRepository(userAgents.get(0).getAllUser().getUniqueServiceNumber());
+        		UserBlockchainKey bcUser = bcdao.preCreateBlockchainKey(userAgents.get(0).getAllUser());
             	AllBlockchainTransaction tx= bcdao.preCreateBlockchainTransaction(bcUser,"USER_CREATED");
-        	data.put("username",alluser.getFullName());
+        	data.put("username",userAgents.get(0).getAllUser().getFullName());
         	int countOfDevices = listofDevices.size();
         	for (int i=0;i<countOfDevices;i++) {
         		data.put("deviceId"+(i+1),listofDevices.get(i).get("DeviceID"));
@@ -216,11 +228,11 @@ public class UserProfileDao extends AbstractBaseDao
         	}
         	
         	data.put("url",dcb.getUrl());
-        	data.put("phoneNumber",alluser.getPhoneNumber());
+        	data.put("phoneNumber",userAgents.get(0).getAllUser().getPhoneNumber());
         	JobGeneratorImpl obj = new JobGeneratorImpl(); 
             JobGenerator ngenerator = new JobGeneratorUtil(); 
             obj.registerJObGenerator(ngenerator);
-            obj.generateJob("CREATE_USER",blockChainURL+"/api/createUser",data,1,alluser, tx.getAllBlockchainTrxId(),bcdao); 
+            obj.generateJob("CREATE_USER",blockChainURL+"/api/createUser",data,1,userAgents.get(0).getAllUser(), tx.getAllBlockchainTrxId(),bcdao); 
         	//bcdao.addBlockchainTransaction(responseFrombcnetwork.get("Tx"), "USER_CREATED");
 //     	  data = new JSONObject();
 //     	  data.put("userid", responseFrombcnetwork.get("User_ID"));
@@ -245,11 +257,30 @@ public class UserProfileDao extends AbstractBaseDao
     }
     
     
-    public HashMap<String,Object> addUserAgent(UserAgents userAgent) {
+    public HashMap<String,Object> addUserAgent(HashMap<String, Object> request) {
         
     	HashMap<String,Object> response=new HashMap<String, Object>();
     	JSONObject data = new JSONObject();
         try {
+        	int userId = (int)request.get("userId");
+        	List<UserAgents> userAgents = userAgentRepo.getUserAgent(userId);
+        	if(userAgents.size() > 0) {
+        		response.put("message",CustomMessages.getCustomMessages("UAAE"));
+            	   response.put("key","404");
+            	   return response;
+        	}
+        	AllUser user = alluserrepo.getUserIdById(userId);
+        	if(user == null) {
+        		response.put("message",CustomMessages.getCustomMessages("NSU"));
+           	   response.put("key","404");
+           	   return response;
+        	}
+        	UserAgents userAgent = new UserAgents();
+        	userAgent.setAllUser(user);
+        	userAgent.setAgentName((String)request.get("agentName"));
+        	userAgent.setDwAgentId((int)request.get("dwAgentId"));
+        	userAgent.setWifissId((String)request.get("wifiSsid"));
+        	userAgent.setMacAddress((String)request.get("macAddress"));
         	userAgentRepo.save(userAgent);
         	response.put("message",CustomMessages.getCustomMessages("SUC"));
       	   response.put("key","200");
@@ -270,20 +301,27 @@ public class UserProfileDao extends AbstractBaseDao
     	HashMap<String,Object> response=new HashMap<String, Object>();
     	JSONObject data = new JSONObject();
         try {
+        	AllUser user = alluserrepo.getUserIdById(userId);
+        	if(user == null) {
+        		response.put("message",CustomMessages.getCustomMessages("NSU"));
+           	   response.put("key","404");
+           	   return response;
+        	}
         	List<UserAgents> userAgents = userAgentRepo.getUserAgent(userId);
         	List<UserAgentsDto> userAgentsdtoList = new ArrayList<>();
         	for (UserAgents agent: userAgents) {
         		UserAgentsDto userAgentsdto = new UserAgentsDto();
-        		userAgentsdto.setAgentId(agent.getAgentId());
+        		userAgentsdto.setDwAgentId(agent.getDwAgentId());
         		userAgentsdto.setAgentName(agent.getAgentName());
         		userAgentsdto.setMacAddress(agent.getMacAddress());
         		userAgentsdto.setWifiSsid(agent.getWifissId());
+        		userAgentsdto.setUserAgentId(agent.getId());
         		userAgentsdtoList.add(userAgentsdto);
         	}
         	response.put("message",CustomMessages.getCustomMessages("SUC"));
       	   response.put("key","200");
       	   if (userAgentsdtoList.isEmpty()) {
-      		 response.put("userAgents","No User Agent Found");
+      		 response.put("message","No User Agent Found");
       	   } else {
       	   response.put("userAgents",userAgentsdtoList);
       	   }

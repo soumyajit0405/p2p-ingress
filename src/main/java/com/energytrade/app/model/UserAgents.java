@@ -54,13 +54,17 @@ public class UserAgents implements Serializable {
 		this.wifissId = wifissId;
 	}
 
-	public int getAgentId() {
-		return agentId;
+
+
+	public int getDwAgentId() {
+		return dwAgentId;
 	}
 
-	public void setAgentId(int agentId) {
-		this.agentId = agentId;
+	public void setDwAgentId(int dwAgentId) {
+		this.dwAgentId = dwAgentId;
 	}
+
+
 
 	private byte softdeleteflag;
 
@@ -79,7 +83,8 @@ public class UserAgents implements Serializable {
 	@JoinColumn(name="user_id")
 	private AllUser allUser;
 
-	private int agentId;
+	@Column(name="agent_id")
+	private int dwAgentId;
 
 	public UserAgents() {
 	}

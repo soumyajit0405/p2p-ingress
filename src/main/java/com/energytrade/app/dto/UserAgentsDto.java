@@ -4,7 +4,17 @@ import com.energytrade.app.model.AllElectricityBoard;
 
 public  class UserAgentsDto {
 
-	private int agentId;
+	private int dwAgentId;
+	
+	private int userAgentId;
+
+	public int getUserAgentId() {
+		return userAgentId;
+	}
+
+	public void setUserAgentId(int userAgentId) {
+		this.userAgentId = userAgentId;
+	}
 
 	private String agentName;
 	
@@ -12,12 +22,13 @@ public  class UserAgentsDto {
 	
 	private String wifiSsid;
 
-	public int getAgentId() {
-		return agentId;
+	
+	public int getDwAgentId() {
+		return dwAgentId;
 	}
 
-	public void setAgentId(int agentId) {
-		this.agentId = agentId;
+	public void setDwAgentId(int dwAgentId) {
+		this.dwAgentId = dwAgentId;
 	}
 
 	public String getAgentName() {

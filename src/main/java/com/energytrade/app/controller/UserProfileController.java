@@ -32,7 +32,7 @@ public class UserProfileController extends AbstractBaseController
     	return response;
     }
     
-    @RequestMapping(value =REST+"addDevice/p2p" , method =  RequestMethod.POST , headers =  "Accept=application/json" )
+    @RequestMapping(value ="user/devices" , method =  RequestMethod.POST , headers =  "Accept=application/json" )
     public HashMap<String,Object> addDeviceP2P(@RequestBody HashMap<String,Object> deviceDetails) {
         
     	HashMap<String,Object> response=new HashMap<String, Object>();
@@ -56,7 +56,7 @@ public class UserProfileController extends AbstractBaseController
     	return response;
     }
     
-    @RequestMapping(value ="getUserDevicesP2P/{userId}" , method =  RequestMethod.GET , headers =  "Accept=application/json" )
+    @RequestMapping(value ="user/{userId}/devices" , method =  RequestMethod.GET , headers =  "Accept=application/json" )
     public HashMap<String,Object> getUserDevicesP2P(@PathVariable int userId) {
         
     	HashMap<String,Object> response=new HashMap<String, Object>();
@@ -64,15 +64,15 @@ public class UserProfileController extends AbstractBaseController
     	return response;
     }
     
-    @RequestMapping(value =REST+"addUserAgent" , method =  RequestMethod.POST , headers =  "Accept=application/json" )
-    public HashMap<String,Object> addUserAgent(@RequestBody UserAgents userAgent) {
+    @RequestMapping(value ="user/agent" , method =  RequestMethod.POST , headers =  "Accept=application/json" )
+    public HashMap<String,Object> addUserAgent(@RequestBody HashMap<String, Object> request) {
         
     	HashMap<String,Object> response=new HashMap<String, Object>();
-    	response.put("response", userProfileService.addUserAgent(userAgent));
+    	response.put("response", userProfileService.addUserAgent(request));
     	return response;
     }
     
-    @RequestMapping(value ="getUserAgent/{userId}" , method =  RequestMethod.GET , headers =  "Accept=application/json" )
+    @RequestMapping(value ="user/{userId}/agent" , method =  RequestMethod.GET , headers =  "Accept=application/json" )
     public HashMap<String,Object> getUserAgent(@PathVariable int userId) {
         
     	HashMap<String,Object> response=new HashMap<String, Object>();

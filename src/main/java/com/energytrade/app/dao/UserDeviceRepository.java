@@ -27,6 +27,14 @@ public interface UserDeviceRepository extends JpaRepository<UserDevice, Long>
     @Query("Select a from DevicePl a where a.deviceTypeId=?1")
     DevicePl getDevice( int deviceId);   
     
+    @Query("Select a from DevicePl a where upper(a.deviceTypeName)=?1")
+    DevicePl getDeviceByName( String deviceTypeName);   
+    
+    
+    @Query("Select a from DevicePl a where a.deviceTypeName=?1")
+    DevicePl getDefaultDeviceType( String deviceTypeName);   
+    
+    
     @Query("Select COALESCE(max(a.userDeviceId),0) from UserDevice a ")
     int getUserDeviceCount();   
     

@@ -41,8 +41,8 @@ public class UserProfileService extends AbstractBaseService
     public HashMap<String,Object> getAllUserDevicesP2P(int userId) {
         return this.userprofiledao.getAllUserDevicesP2P(userId);
     }
-    public HashMap<String,Object> addUserAgent(UserAgents userAgent) {
-        return this.userprofiledao.addUserAgent(userAgent);
+    public HashMap<String,Object> addUserAgent(HashMap<String, Object> request) {
+        return this.userprofiledao.addUserAgent(request);
     }
     
     public HashMap<String,Object> getUserAgent(int userId) {
