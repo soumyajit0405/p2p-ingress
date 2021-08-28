@@ -107,6 +107,19 @@ public class AllUser implements Serializable {
 	//bi-directional many-to-one association to AllOtp
 	@OneToMany(mappedBy="allUser")
 	private List<UserAccessTypeMapping> userAccessMap;
+	
+	@JsonIgnore
+	//bi-directional many-to-one association to AllOtp
+	@OneToMany(mappedBy="allUser")
+	private List<UserPermissionMapping> userPermissionMap;
+
+	public List<UserPermissionMapping> getUserPermissionMap() {
+		return userPermissionMap;
+	}
+
+	public void setUserPermissionMap(List<UserPermissionMapping> userPermissionMap) {
+		this.userPermissionMap = userPermissionMap;
+	}
 
 	public List<UserAccessTypeMapping> getUserAccessMap() {
 		return userAccessMap;

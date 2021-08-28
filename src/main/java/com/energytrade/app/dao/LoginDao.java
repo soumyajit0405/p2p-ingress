@@ -95,6 +95,16 @@ public class LoginDao extends AbstractBaseDao
     		   }
     	   response.put("accessLevel", listOfAccessLevels);
     	   }
+    	   List<HashMap<String,String>> permissions = new ArrayList<>();
+    	   if (alluser.getUserPermissionMap() != null) {
+    		   for (int i=0;i<alluser.getUserPermissionMap().size();i++) {
+    			   HashMap<String,String> userPermission = new HashMap<>();
+    			   userPermission.put("permission", alluser.getUserPermissionMap().get(i).getPemission().getUserPermissionName());
+    			   permissions.add(userPermission);
+    			   
+    		   }
+    	   response.put("permission", permissions);
+    	   }
     	  // GeneralConfig bcConfig = userdevicerepo.getBlockChainConfig("block_chain");
 //    	   String bcStatus = AppStartupRunner.configValues.get("blockChain");
 //    	   if (bcStatus.equalsIgnoreCase("Y")) {
