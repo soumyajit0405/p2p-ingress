@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import com.energytrade.AppStartupRunner;
 import com.energytrade.app.dto.AllElectricityBoardDto;
@@ -70,11 +71,20 @@ public class LoginDao extends AbstractBaseDao
     	   response.put("key","200");
     	   response.put("userId",alluser.getUserId());
     	   response.put("userRole",alluser.getUserRolesPl().getUserRoleName());
-    	   response.put("localityId",alluser.getLocality().getLocalityId());
-    	   response.put("localityName",alluser.getLocality().getLocalityName());
+    	   if (!ObjectUtils.isEmpty(alluser.getLocality())) {
+    		   response.put("localityId",alluser.getLocality().getLocalityId());
+        	   response.put("localityName",alluser.getLocality().getLocalityName());
+        	      
+    	   }
     	   response.put("userName",alluser.getFullName());
-    	   response.put("boardId",alluser.getAllElectricityBoard().getElectricityBoardId());
-    	   response.put("stateId",alluser.getAllState().getStateId());
+    	   if (!ObjectUtils.isEmpty(alluser.getAllElectricityBoard())) {
+    		   response.put("boardId",alluser.getAllElectricityBoard().getElectricityBoardId());   
+    	   }
+    	   
+    	   if (!ObjectUtils.isEmpty(alluser.getAllState())) {
+    		   response.put("stateId",alluser.getAllState().getStateId());   
+    	   } 
+    	   
     	   response.put("uniqueServiceNumber",alluser.getUniqueServiceNumber());
     	   //response.put("uniqueServiceNumber",alluser.getUniqueServiceNumber());
     	   List<HashMap<String,String>> listOfAccessLevels = new ArrayList<>();
